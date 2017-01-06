@@ -1,5 +1,11 @@
-# Python
+# Django
 
 *.DS_Store
 *.pyc
 *test.py
+db.sqlite3
+*.log
+*.pot
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
