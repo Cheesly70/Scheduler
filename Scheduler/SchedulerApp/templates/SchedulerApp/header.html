@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<title>College Scheduler</title>
+	<meta charset="utf-8" />
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'SchedulerApp/css/bootstrap.min.css' %}" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<style type="text/css">
+		html, body {
+		  margin-top: 50px;
+		  background-color: #E7FEFF;
+		  <!-- padding-top: 70px; -- keep last-->
+		}
+		#nav {
+			color: blue;
+		}
+
+		.footer {
+			width: 100%;
+			bottom: 0;
+			position: fixed;
+			height: 60px;
+  		line-height: 60px; /* Vertically center the text there */
+  		background-color: #f5f5f5;
+		}
+
+	</style>
+
+</head>
+
+<body>
+	<div class="container-fluid">
+
+		<div class="navbar navbar-default navbar-fixed-top ">
+			<div class="container" id="nav">
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="navbar-header"> <!--to contain logo and links-->
+							<a href="#">
+								<img src="{% static 'SchedulerApp/images/sample_logo.jpg' %}" class="responsive-img" style="max-height:50px" alt="sample_logo">
+								<h2>College Scheduler</h2>
+							</a>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div id="navigation-links">
+							<ul class="nav navbar-nav">
+								<li class="active"><a href="#">Home</a></li>
+								<li><a href="#">About</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+				</div> <!--	row -->
+
+			</div> <!-- container -->
+		</div> <!-- navigation -->
+
+		<br />
+	</div> <!-- container-fluid -->
+
+	<!--rest of the body after nav bar-->
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class='container-fluid'>
+			<br />
+				 {% block content %}
+				 <p>Place holder for temporary text</p>
+				 {% endblock %}
+			</div>
+		</div>
+	</div>
+
+	<!--the footer section-->
+	<footer class="footer">
+		<div cass="container-fluid"
+			<hr />
+				<h1>This is my temporary footer</h1>
+		</div>
+	</footer>
+
+
+</body>
+
+
+</html>
