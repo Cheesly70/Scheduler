@@ -1,36 +1,86 @@
 {% extends 'SchedulerApp/header.html' %}
 
 {% block content %}
+{% load staticfiles %}
+
 <style type="text/css">
   p {
     color: white;
   }
 
-  #large-box {
-    padding: 40px 60px 40px 60px;
-    margin-top: -20px;
+  #intro {
+    padding: 30px 0px 30px 0px;
+    margin-top: -30px;
+    margin-right: -30px;
     font-family: Cherry+Swash;
+
+    background-color: #00B2F5;
   }
+
+  #students-img {
+    max-height: 100px;
+    margin-left: -15px;
+    margin-top: 5px;
+
+  }
+  .big-li {
+    font-size: 30px;
+  }
+
+  #box {
+    position: relative;
+    padding: 30px 40px 110px 40px;
+
+    margin-right: -50px;
+    margin-bottom: -100px;
+    background-color: grey;
+    font-family: Baskerville;
+  }
+
 </style>
 
-  <div class="text-center" style="background-color: #00B2F5; width:100% " id="large-box">
+  <div class="text-center container-fluid" id="intro">
     <p class="big-font">
       Do you have a bunch of interesting college courses you want to take?<br/>
-      Are you unsure of what order you can and should take them in?<br/><br/>
-      <span style="color:#F2570A">Well then, you've come to the right place!</span><br/>
+      Are you unsure of what order you can and should take them in?<br/>
+      Well then you've come to the right place!<br/><br/>
+      <span style="color:#F2570A">Whenever you're ready!</span><br/>
       <br/>
       <a class="btn btn-default btn-danger btn-lg" href="#">Start Building Your Schedule Now</a>
       <!-- this button redirects to a part lower down in the page -->
-
     </p>
   </div>
 
+  <div class="row container-fluid">
+    <div id="students-img">
+      <div class="col-md-7"> <!-- first set of the 6 columns -->
+        <img src="{% static 'SchedulerApp/images/happy_students.jpg' %}" class="responsive-img"  alt="students">
+      </div>
+    </div>
+      <div class="col-md-5" >
+        <div class="text-center" id="box"> <!-- second set of 6 columns -->
+          <h1>Building Your College Schedule</h1>
+          <h2>Starting in the two boxes below:</h2>
+          <br/>
+          <hr/>
+        </div>
+        <div>
+          <ul class="big-li" id="box">
+            <li>Enter the # of courses you're considering</li>
+            <li>Enter the number of courses you want to take</li>
+            <li>Click submit</li>
+            <li>Follow the remaining instructions below</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-  <div class="text-center" id="form">
-    <form action="" method="POST">{% csrf_token %}
-      {{form.as_p}}
-      <input type="Submit" value="submit">
-    </form>
-  </div>
+
+
+
+
+
+
+
 
 {% endblock %}
