@@ -8,5 +8,5 @@ def index(request):
     return render(request, 'SchedulerApp/home.html') #{'form': form,
                                                       #'class_num': classnum,})
 
-def courses(request):
-    return HttpResponse("testing testing 123")
+def mainform(request):
+    return HttpResponse("<h1>testing testing 123</h1>")
