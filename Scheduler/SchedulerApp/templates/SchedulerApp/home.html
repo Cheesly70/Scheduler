@@ -14,7 +14,6 @@
     margin-top: -30px;
     margin-right: -30px;
     font-family: Cherry+Swash;
-
     background-color: #00B2F5;
   }
 
@@ -23,21 +22,22 @@
     margin-left: -15px;
     margin-top: 5px;
     margin-bottom: auto;
-
   }
+
   .big-li {
-    font-size: 30px;
+    font-size: 27px;
   }
 
   #greybox {
-    position: relative;
-    padding: 30px 40px 127px 40px;
+    padding: 40px;
+    margin-left: 5px;
+    padding-bottom: 137px;
 
-    margin-right: -51px;
-    margin-bottom: -100px;
     background-color: grey;
     font-family: Cherry+Swash;
   }
+
+
 
 </style>
 
@@ -53,24 +53,26 @@
     </p>
   </div>
 
-  <div class="row container-fluid">
+  <div class="row">
     <div id="students-img">
       <div class="col-md-7"> <!-- first set of the 6 columns -->
-        <img src="{% static 'SchedulerApp/images/happy_students.jpg' %}" class="responsive-img"  alt="students">
+        <img class="responsive-img" src="{% static 'SchedulerApp/images/happy_students.jpg' %}"  alt="students">
       </div>
     </div>
-      <div class="col-md-5" >
-        <div class="text-center" id="greybox"> <!-- second set of 6 columns -->
+      <div class="col-md-5" id="greybox">
+        <div class="text-center"> <!-- second set of 6 columns -->
+          <br/>
           <h1 id="red-button-click">Building Your College Schedule</h1>
-          <h2>Starts with the Prelim Form Below:</h2>
+          <h3>Starts with the Prelim Form Below:</h3>
           <br/>
           <hr/>
+          <br/><br/>
         </div>
-        <div class="big-li" id="greybox">
-          <i class="fa fa-arrow-right" aria-hidden="true"> Enter the # of courses you're considering</i>
-          <i class="fa fa-arrow-right" aria-hidden="true"> Enter the # of courses you want to take</i>
-          <i class="fa fa-arrow-right" aria-hidden="true"> Click "Let's Begin!"</i>
-          <i class="fa fa-arrow-right" aria-hidden="true"> Follow the upcoming instructions</i>
+        <div class="big-li">
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you're considering</span>
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you want to take</span>
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Click "Let's Begin!"</span><br/>
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Follow the upcoming instructions</span>
         </div>
       </div>
     </div>
@@ -78,16 +80,16 @@
     <!-- The initial form for # of courses being considered/taken -->
     <div class="text-center" id="prelimform">
       <br/>
-      <h2 style="Cherry+Swash">Preliminary Form</h2>
+      <h2 style="font-family:Cherry+Swash; color:#00B2F5">Preliminary Form</h2>
       <!-- need to check that 2nd # isn't larger than first -->
-      <form action="{% url 'SchedulerApp:mainform' %}" method="get">
+      <form action="{% url 'SchedulerApp:getmainform' %}" method="POST">
         {% csrf_token %}
         <label for="prelimform" style="Cherry+Swash">Enter the number of courses you're considering</label>
-        <input type="number" name="total_load" placeholder="i.e. 10 total" max="48" required="required"/>
+        <input type="number" name="total_load" value="total_load" placeholder="i.e. 10 total" max="48" required="required"/>
         <br/>
         <label for="prelimform" style="Cherry+Swash">Enter the number of courses you want to take</label>
-        <input type="number" name="desired_load" placeholder="i.e. 5" max="48" required="required"/>
-        <br />
+        <input type="number" name="desired_load" value="desired_load" placeholder="i.e. 5" max="48" required="required"/>
+        <br/><br/>
         <input class="btn btn-default btn-primary" type="submit" value="Let's Begin!" />
         <br/>
       </form>
