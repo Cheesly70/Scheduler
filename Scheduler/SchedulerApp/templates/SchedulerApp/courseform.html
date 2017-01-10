@@ -2,18 +2,17 @@
 
 {% block content %}
 
-{% load staticfiles %}
-
-
   <form action="{% url 'SchedulerApp:processmainform' %}" method="POST">
     {% csrf_token %}
-    {% for i in range(first_val) %}
+
+    {% for i in prelim1 %}
       <label>course{{ forloop.counter }}</label>
-      <input type="text" name="course" value="course{{ forloop.counter }}" /><br/>
+      <input type="text" name="course" value="course{{ forloop.counter }}" placeholder="Enter course name" />
+      <br/>
     {% endfor %}
+
     <input type="submit" value="Submit" />
   </form>
-
 
 
 {% endblock %}

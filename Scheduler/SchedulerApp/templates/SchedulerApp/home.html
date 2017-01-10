@@ -29,9 +29,10 @@
   }
 
   #greybox {
-    padding: 40px;
+
     margin-left: 5px;
-    padding-bottom: 137px;
+    padding-bottom: 145px;
+
 
     background-color: grey;
     font-family: Cherry+Swash;
@@ -69,8 +70,8 @@
           <br/><br/>
         </div>
         <div class="big-li">
-          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you're considering</span>
-          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you want to take</span>
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you're considering</span><br/>
+          <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Enter the # of courses you want to take</span><br/>
           <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Click "Let's Begin!"</span><br/>
           <span><i class="fa fa-arrow-right" aria-hidden="true"></i> Follow the upcoming instructions</span>
         </div>
@@ -85,10 +86,10 @@
       <form action="{% url 'SchedulerApp:getmainform' %}" method="POST">
         {% csrf_token %}
         <label for="prelimform" style="Cherry+Swash">Enter the number of courses you're considering</label>
-        <input type="number" name="total_load" value="total_load" placeholder="i.e. 10 total" max="48" required="required"/>
+        <input type="number" name="total_load" value="tl" placeholder="10" max="48" min="1" required="required"/>
         <br/>
-        <label for="prelimform" style="Cherry+Swash">Enter the number of courses you want to take</label>
-        <input type="number" name="desired_load" value="desired_load" placeholder="i.e. 5" max="48" required="required"/>
+        <label for="prelimform" style="Cherry+Swash">Enter the number of courses you want to take (i.e. next semester)</label>
+        <input type="number" name="desired_load" value="dl" placeholder="5" max="48" min="1" required="required"/>
         <br/><br/>
         <input class="btn btn-default btn-primary" type="submit" value="Let's Begin!" />
         <br/>
