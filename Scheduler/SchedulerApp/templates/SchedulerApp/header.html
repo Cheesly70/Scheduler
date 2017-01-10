@@ -23,10 +23,12 @@
 		}
 
 		footer {
+			bottom: 0;
 			background: black;
     	padding: 10px 0 10px 0;
     	margin-top: 30px;
 			margin-right: -30px;
+			width: 100%;
 			color: #D6D5D4;
 
 		}
@@ -41,8 +43,6 @@
 			margin-top: -30px;
 		}
 
-
-
 	</style>
 
 </head>
@@ -56,7 +56,7 @@
 				<div class="row">
 					<div class="col-md-8">
 						<div class="navbar-header"> <!--to contain logo and links-->
-							<a class="navbar-brand" href="#">
+							<a class="navbar-brand" href="/">
 								<h2 style="margin-top:-5px;">
 									<img src="{% static 'SchedulerApp/images/sample_logo2.png' %}" class="responsive-img" style="max-height:50px" alt="sample_logo">
 									College Schedule Builder
@@ -84,20 +84,15 @@
 	</div> <!-- container-fluid -->
 
 	<!--rest of the body after nav bar-->
-
-	<div class="row" id="block-content">
-		<div class="col-md-12">
-			<div class='container-fluid'>
-			<br />
-				 {% block content %}
-				 {% endblock %}
-			</div>
-		</div>
+	<div class="container-fluid">
+		{% block content %}
+		{% endblock %}
 	</div>
+
 
 	<!--the footer section-->
 	<footer>
-		<div cass="container-fluid" id="social_links">
+		<div cass="container-fluid">
 				<div id="info" class="text-center">
 					<h4>Written and coded by Chelsey E</h4>
 					<span>
