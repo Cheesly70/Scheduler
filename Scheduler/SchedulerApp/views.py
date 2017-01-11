@@ -1,7 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
+
+num_courses = 0
+full_course_lst = []
+num_prereq_list = []
 
 def index(request):
     #return HttpResponse("<h2>HEY!</h2>")
@@ -13,18 +17,19 @@ def index(request):
 
 def getmainform(request):
     # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        first_val = int(request.POST.get("total_load"))
+    if request.method == 'GET':
+        first_val = int(request.GET.get("total_load"))
+        num_courses = first_val
         # the following allos the rendered template to iterate
         # over the total number of courses a user selects
         string = "x" * first_val
-        second_val = request.POST.get("desired_load")
+        second_val = request.GET.get("desired_load")
     return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,
                                                             'prelim2': second_val,})
 
 def processmainform(request):
     # here is where the top sort logic goes
-    #return HttpResponse("<h1>testing testing 123</h1>")
+    return HttpResponse("<h1>testing testing 123</h1>")
 
     '''
     General Idea:
@@ -48,3 +53,11 @@ def processmainform(request):
         - decrement the label so that the next deepest node gets that ordering value
 
     '''
+    # use ignore case when processing list of prereqs list
+    # check if both the course list and prereq list are empty return a HttpResponseRedirect
+    # or something like it
+    # create list to populate with course names
+    if request.method == 'GET':
+        course_list[i] = int(request.POST.get("Course + i"))
+
+    #return HttpResponseBadRequest("Return home and try again")

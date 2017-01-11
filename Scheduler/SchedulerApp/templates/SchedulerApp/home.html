@@ -82,7 +82,7 @@
       <br/>
       <h2 style="font-family:Cherry+Swash; color:#00B2F5">Preliminary Form</h2>
       <!-- need to check that 2nd # isn't larger than first -->
-      <form action="{% url 'SchedulerApp:getmainform' %}" method="POST">
+      <form action="{% url 'SchedulerApp:getmainform' %}" method="GET">
         {% csrf_token %}
         <label for="prelimform" style="Cherry+Swash">Enter the number of courses you're considering</label>
         <input type="number" name="total_load" value="tl" placeholder="10" max="48" min="1" required="required"/>
