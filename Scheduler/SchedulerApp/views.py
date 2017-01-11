@@ -3,9 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 
-num_courses = 0
-full_course_lst = []
-num_prereq_list = []
+my_course_load = 0
 
 def index(request):
     #return HttpResponse("<h2>HEY!</h2>")
@@ -19,13 +17,14 @@ def getmainform(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
         first_val = int(request.GET.get("total_load"))
-        num_courses = first_val
         # the following allos the rendered template to iterate
         # over the total number of courses a user selects
         string = "x" * first_val
-        second_val = request.GET.get("desired_load")
-    return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,
-                                                            'prelim2': second_val,})
+        # grab the second value -> desired_load for semester
+        my_course_load = request.GET.get("desired_load")
+        return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
+                                                            #'prelim2': second_val,})
+    # return error or refirect ro main form
 
 def processmainform(request):
     # here is where the top sort logic goes
