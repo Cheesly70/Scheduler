@@ -11,18 +11,20 @@
     <p style="font-family:verdana">
       In the form below, you will enter your courses on the left hand column, and the<br/>
       corresponding prerequisites in the right-hand column (separated by commas).<br/><br/>
-      If there are no prerequisites for a given course, please enter <span style="color:red">"none" </span>
-      in the appropriate prequisite box.
+      If there are no prerequisites for a given course, or you've fulfilled all prerequisites please enter <span style="color:red">"none" </span>
+      <br/> in the appropriate prequisite box.
+      <br/><br/>
+      Please check the <span style="color:red">"flag"</span> checkbox if the course can be taken simultaneously with its prerequisites.
       <br/><br/>
       <span style="color: red">Note:</span>
       Keep your naming conventions uniform. Do not name a course one thing, then decide midway-through,<br/>
-      to name it to something else; the system will NOT recognize the two courses as the same.
+      to name it something else; the system will NOT recognize the two courses as the same.
       <br/><br/>
       If there are courses that have equivalent prerequisites (i.e. course = cse3500 w/ prereqs -> cse2100
       <span style="color:red">OR</span> cse2050), <br/>
       choose only one of the two prereqs for use throughout the form. They are the same to you, but different to the system.
       <br/><br/>
-      Lastly, if you initially selected the incorrect # of courses, it's ok! Not all boxes need to be filled.
+      Lastly, if you initially selected the incorrect # of courses, it's ok! Not all rows need to be filled.
       <hr style="border-color:black"/>
     </p>
   </div>
@@ -32,11 +34,31 @@
     {% csrf_token %}
 
     {% for total_load in prelim1 %}
-      <label> Course {{ forloop.counter }}
-        <input type="text" name="course" placeholder="Enter course name" maxlength="50" />
+      <label>
+        {% if forloop.counter < 10 %}
+          Course 0{{ forloop.counter }}
+        {% else %}
+          Course {{ forloop.counter }}
+        {% endif %}
+        <input style="margin-left:5px" type="text" name="course" placeholder="Enter course name" maxlength="50" />
       </label>
-      <label style="margin-left:20px" > Prerequisites for Course {{ forloop.counter }}
-        <input style="margin-left:10px" type="text" name="prereqval" placeholder="cse3500, hdfs1060, etc." maxlength="50" />
+
+      <label style="margin-left:15px">
+        {% if forloop.counter < 10 %}
+          Prerequisites for Course 0{{ forloop.counter }}
+        {% else %}
+          Prerequisites for Course {{ forloop.counter }}
+        {% endif %}
+        <input style="margin-left:5px" type="text" name="prereqval {{ forloop.counter }}" placeholder="cse3500, hdfs1060, etc." maxlength="50" />
+      </label>
+
+      <label style="margin-left:20px">
+        {% if forloop.counter < 10 %}
+          Flag for course 0{{ forloop.counter }}
+        {% else %}
+          Flag for course {{ forloop.counter }}
+        {% endif %}
+        <input style="margin-left:5px" type="checkbox" name="flag {{ forloop.counter }}" />
       </label>
       <br/>
     {% endfor %}

@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 
+total_load = 0
 my_course_load = 0
 
 def index(request):
@@ -17,6 +18,7 @@ def getmainform(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
         first_val = int(request.GET.get("total_load"))
+        total_load = first_val
         # the following allos the rendered template to iterate
         # over the total number of courses a user selects
         string = "x" * first_val
@@ -24,11 +26,14 @@ def getmainform(request):
         my_course_load = request.GET.get("desired_load")
         return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
                                                             #'prelim2': second_val,})
-    # return error or refirect ro main form
+    # return error or redirect ro main form
 
 def processmainform(request):
     # here is where the top sort logic goes
-    return HttpResponse("<h1>testing testing 123</h1>")
+    # return HttpResponse("<h1>testing testing 123</h1>")
+
+    if request.method == 'GET':
+        first_val = int(request.GET.get("total_load"))
 
     '''
     General Idea:
@@ -52,6 +57,13 @@ def processmainform(request):
         - decrement the label so that the next deepest node gets that ordering value
 
     '''
+    # step1: process response information and put into lsits
+    # step2: create graph out of prcessed information
+    # step3: run top sort on graph
+    # Last: render results appropriately
+    # Optional: provide output as pdf (check out outputting with django pdfs)
+
+
     # use ignore case when processing list of prereqs list
     # check if both the course list and prereq list are empty return a HttpResponseRedirect
     # or something like it
