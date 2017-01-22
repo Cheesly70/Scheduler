@@ -15,7 +15,6 @@ def getmainform(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
         total_load = int(request.GET.get("total_load"))
-        print total_load
         request.session['total_load'] = total_load
         #request.session["total_load"] = total_load
 
@@ -57,16 +56,51 @@ def processmainform(request):
     # {'sape': 4139, 'guido': 4127, 'jack': 4098}
 
 
-
+    # put data from main form into python dictionary
     course_dict = {}
     if request.method == 'GET':
         total_load = int(request.session.get('total_load'))
         for i in range(1, total_load + 1):
-            i = str(i)
-            course_dict[str(request.GET.get("course " + i))] = [request.GET.get("prereqval " + i)]
+            i = str(i) # since strings are immutable
+            course_dict[str(request.GET.get("course " + i))] = [str(request.GET.get("prereqval " + i))]
         context = {'course_dict':course_dict,}
         print course_dict
-    return render(request, 'SchedulerApp/test.html', context)
+    #return render(request, 'SchedulerApp/test.html', context)
+
+
+    # iterate the dictionary to form a list of unique courses from the main form
+    course_list = []
+    for key, value in course_dict.iteritems():
+        course_list.append(key)
+        course_list.extend([x.strip() for x in value[0].split(',')])
+    # clear out the duplicates in the course list
+    course_list = sorted(set(course_list))
+    #print course_list
+
+    # create graph (path_existence matrix) from the list & dictionary above
+    graph = []
+    row = []
+    for course in course_list:
+        for other_course in course_list:
+            try:
+                # see if the course is a key in the dictionary
+                try_this = str(course) in [x.strip() for x in course_dict[str(other_course)][0].split(',')]
+            except KeyError:
+                row.append(0)
+            else:
+                #if str(course) in [x.strip() for x in course_dict[str(other_course)][0].split(',')]:
+                if try_this:
+                    row.append(1)
+                else:
+                    row.append(0)
+        # if no more other_courses left in list, then add the row to the graph
+        graph.append(row)
+        # reset row to be empty
+        row = []
+    print graph
+
+
+    return HttpResponse("<h1>Testing</h1>")
 
     '''
     General Idea:
@@ -90,8 +124,3 @@ def processmainform(request):
         - decrement the label so that the next deepest node gets that ordering value
 
     '''
-
-    #if request.method == 'GET':
-    #    course_list[i] = int(request.POST.get("Course + i"))
-
-    #return HttpResponseBadRequest("Return home and try again")
