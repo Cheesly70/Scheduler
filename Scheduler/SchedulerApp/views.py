@@ -3,9 +3,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 
-total_load = 0
-my_course_load = 0
-
 def index(request):
     #return HttpResponse("<h2>HEY!</h2>")
     return render(request, 'SchedulerApp/home.html') #{'form': form,
@@ -17,23 +14,59 @@ def index(request):
 def getmainform(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
-        first_val = int(request.GET.get("total_load"))
-        total_load = first_val
-        # the following allos the rendered template to iterate
+        total_load = int(request.GET.get("total_load"))
+        print total_load
+        request.session['total_load'] = total_load
+        #request.session["total_load"] = total_load
+
+        #if not session:
+          #total_load = 0
+        #request.session['total_load'] = total_load
+        #global total_load
+        #total_load = int(request.GET.get("total_load"))
+        # the following allows the rendered template to iterate
         # over the total number of courses a user selects
-        string = "x" * first_val
+        string = "x" * total_load
         # grab the second value -> desired_load for semester
         my_course_load = request.GET.get("desired_load")
-        return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
+        return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,
+                                                                'load': total_load,})
                                                             #'prelim2': second_val,})
     # return error or redirect ro main form
 
 def processmainform(request):
     # here is where the top sort logic goes
     # return HttpResponse("<h1>testing testing 123</h1>")
+    '''
+    # step1: process response information and put into lists
+    # step2: create graph out of prcessed information
+    # step3: run top sort on graph
+    # Last: render results appropriately
+    # Optional: provide output as pdf (check out outputting with django pdfs)
 
+
+    # use ignore case when processing list of prereqs list
+    # check if both the course list and prereq list are empty return a HttpResponseRedirect
+    # or something like it
+    # create list to populate with course names
+
+    '''
+    # tel = {'jack': 4098, 'sape': 4139}
+    # tel['guido'] = 4127
+    # tel
+    # {'sape': 4139, 'guido': 4127, 'jack': 4098}
+
+
+
+    course_dict = {}
     if request.method == 'GET':
-        first_val = int(request.GET.get("total_load"))
+        total_load = int(request.session.get('total_load'))
+        for i in range(1, total_load + 1):
+            i = str(i)
+            course_dict[str(request.GET.get("course " + i))] = [request.GET.get("prereqval " + i)]
+        context = {'course_dict':course_dict,}
+        print course_dict
+    return render(request, 'SchedulerApp/test.html', context)
 
     '''
     General Idea:
@@ -57,18 +90,8 @@ def processmainform(request):
         - decrement the label so that the next deepest node gets that ordering value
 
     '''
-    # step1: process response information and put into lsits
-    # step2: create graph out of prcessed information
-    # step3: run top sort on graph
-    # Last: render results appropriately
-    # Optional: provide output as pdf (check out outputting with django pdfs)
 
-
-    # use ignore case when processing list of prereqs list
-    # check if both the course list and prereq list are empty return a HttpResponseRedirect
-    # or something like it
-    # create list to populate with course names
-    if request.method == 'GET':
-        course_list[i] = int(request.POST.get("Course + i"))
+    #if request.method == 'GET':
+    #    course_list[i] = int(request.POST.get("Course + i"))
 
     #return HttpResponseBadRequest("Return home and try again")

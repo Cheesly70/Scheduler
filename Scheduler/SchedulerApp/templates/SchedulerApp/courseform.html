@@ -40,7 +40,7 @@
         {% else %}
           Course {{ forloop.counter }}
         {% endif %}
-        <input style="margin-left:5px" type="text" name="course" placeholder="Enter course name" maxlength="50" />
+        <input style="margin-left:5px" type="text" name="course {{ forloop.counter }}" placeholder="Enter course name" maxlength="50" />
       </label>
 
       <label style="margin-left:15px">
