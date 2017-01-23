@@ -22,9 +22,9 @@ def getmainform(request):
         string = "x" * total_load
         # grab the second value -> desired_load for semester
         my_course_load = request.GET.get("desired_load")
-        return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,
-                                                                'load': total_load,})
-                                                            #'prelim2': second_val,})
+        return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
+
+                                                            
     # return error or redirect ro main form
 
 def processmainform(request):
