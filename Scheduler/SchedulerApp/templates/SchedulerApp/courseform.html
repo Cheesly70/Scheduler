@@ -35,18 +35,18 @@
 
     {% for total_load in prelim1 %}
       <label>
-        Course {% if forloop.counter < 10 %}0{% endif %} {{ forloop.counter }}
+        Course {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
         <input style="margin-left:5px" type="text" name="course {{ forloop.counter }}" placeholder="Enter course name" maxlength="50" />
       </label>
 
       <label style="margin-left:15px">
-        Prerequisites for Course {% if forloop.counter < 10 %}0{% endif %} {{ forloop.counter }}
+        Prerequisites for Course {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
         <input style="margin-left:5px" type="text" name="prereqval {{ forloop.counter }}" placeholder="cse3500, hdfs1060, etc." maxlength="50" />
       </label>
 
       <label style="margin-left:20px">
-        Flag for Course {% if forloop.counter < 10 %}0{% endif %} {{ forloop.counter }}
-        <input style="margin-left:5px" type="checkbox" name="flag {{ forloop.counter }}" />
+        Flag for Course {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
+        <input style="margin-left:5px" type="checkbox" name="flag {{ forloop.counter }}" value="flag {{ forloop.counter }}"/>
       </label>
       <br/>
     {% endfor %}

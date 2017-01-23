@@ -16,13 +16,7 @@ def getmainform(request):
     if request.method == 'GET':
         total_load = int(request.GET.get("total_load"))
         request.session['total_load'] = total_load
-        #request.session["total_load"] = total_load
 
-        #if not session:
-          #total_load = 0
-        #request.session['total_load'] = total_load
-        #global total_load
-        #total_load = int(request.GET.get("total_load"))
         # the following allows the rendered template to iterate
         # over the total number of courses a user selects
         string = "x" * total_load
@@ -34,9 +28,9 @@ def getmainform(request):
     # return error or redirect ro main form
 
 def processmainform(request):
-    # here is where the top sort logic goes
-    # return HttpResponse("<h1>testing testing 123</h1>")
-    '''
+
+
+    ''' Thoughts:
     # step1: process response information and put into lists
     # step2: create graph out of prcessed information
     # step3: run top sort on graph
@@ -50,46 +44,72 @@ def processmainform(request):
     # create list to populate with course names
 
     '''
-    # tel = {'jack': 4098, 'sape': 4139}
-    # tel['guido'] = 4127
-    # tel
-    # {'sape': 4139, 'guido': 4127, 'jack': 4098}
 
+    # grab number of courses being considered by user from the getmainform view
+    # using django sessions
+    total_load = int(request.session.get('total_load'))
 
+    # create list containing the value attributes for the flag inputs
+    # from the main form checkbox input fields
+    # used below to check if checkbox was checked on form
+    flag_values = []
+    for num in range (1, total_load + 1):
+        num = str(num)
+        flag_values.append("flag " + num)
+
+    # dictionary that maps the course to its boolean flag value of true (1) or false (0)
+    flag_boolean = {}
     # put data from main form into python dictionary
     course_dict = {}
     if request.method == 'GET':
-        total_load = int(request.session.get('total_load'))
+        #total_load = int(request.session.get('total_load'))
         for i in range(1, total_load + 1):
-            i = str(i) # since strings are immutable
-            course_dict[str(request.GET.get("course " + i))] = [str(request.GET.get("prereqval " + i))]
-        context = {'course_dict':course_dict,}
+            i = str(i) # since strings are immutable and we can't concatenate strs and ints
+            course_str = str(request.GET.get("course " + i))
+            course_dict[course_str] = [str(request.GET.get("prereqval " + i))]
+
+            # check if flag checkbox for course has been checked
+            flag = request.GET.get("flag " + i, None)
+            if flag in flag_values:
+                flag_boolean[course_str] = 1
+            else:
+                flag_boolean[course_str] = 0
+        #context = {'course_dict':course_dict,}
         print course_dict
+        print flag_boolean
     #return render(request, 'SchedulerApp/test.html', context)
 
 
-    # iterate the dictionary to form a list of unique courses from the main form
+
+    # iterate the dictionary to form a 'list' of unique courses from the main form
     course_list = []
     for key, value in course_dict.iteritems():
         course_list.append(key)
-        course_list.extend([x.strip() for x in value[0].split(',')])
+        # the .lower() is in case user types uppercase 'None' for prereqs
+        course_list.extend([x.strip().lower() for x in value[0].split(',')])
     # clear out the duplicates in the course list
     course_list = sorted(set(course_list))
-    #print course_list
+    # if a course has no prereqs need to handle the "none" input since "none"
+    # is not a valid course to add to the list
+    if 'none' in course_list:
+        while 'none' in course_list:
+            course_list.remove('none')
+    print course_list
 
-    # create graph (path_existence matrix) from the list & dictionary above
+    # create directed graph (matrix) from the list & dictionary above
     graph = []
     row = []
     for course in course_list:
         for other_course in course_list:
             try:
-                # see if the course is a key in the dictionary
-                try_this = str(course) in [x.strip() for x in course_dict[str(other_course)][0].split(',')]
+                # check if course is a prereq for other_course
+                # (is course in the dictionary-value list for other_course)
+                # the .lower() is in case a user enters a mix of upper and lowercase course names
+                is_prereq = str(course) in [x.strip().lower() for x in course_dict[str(other_course)][0].split(',')]
             except KeyError:
                 row.append(0)
             else:
-                #if str(course) in [x.strip() for x in course_dict[str(other_course)][0].split(',')]:
-                if try_this:
+                if is_prereq:
                     row.append(1)
                 else:
                     row.append(0)
@@ -100,10 +120,28 @@ def processmainform(request):
     print graph
 
 
+    # run the top sort on the graph, considering courses that can be taken
+    # concurrently with their prerequisites
+    # code coming soon
+
+
+    ''' potentially could use zip the matrix (to get the matrix columns as list index values)
+    and check for existence of 1 or 0 to determine whether that '''
+
+    '''
+    # create a list of all courses that have no prerequisites
+    # check if the # of items in the list is <= to the # of courses
+    the student wants to take for the upcoming semester...if it's equal
+    then create all possibilities amongst the prerequisites and the courses
+    themeselves if they can be taken with their prerequisites
+    '''
+
+
+    # for testing purposes
     return HttpResponse("<h1>Testing</h1>")
 
     '''
-    General Idea:
+    One possible Top sort Idea (old):
         -Create a graph based on input
         -Use DFS to go deep into the graph. When you can't go any further
         you've found the sink node (that you mark with the predefined local var)
