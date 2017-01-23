@@ -21,10 +21,11 @@ def getmainform(request):
         # over the total number of courses a user selects
         string = "x" * total_load
         # grab the second value -> desired_load for semester
-        my_course_load = request.GET.get("desired_load")
+        my_course_load = int(request.GET.get("desired_load"))
+        request.session['my_course_load'] = my_course_load
         return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
 
-                                                            
+
     # return error or redirect ro main form
 
 def processmainform(request):
@@ -45,9 +46,10 @@ def processmainform(request):
 
     '''
 
-    # grab number of courses being considered by user from the getmainform view
-    # using django sessions
+    # grab total # of courses and the # of courses being considered
+    # by user, from the getmainform view using django sessions
     total_load = int(request.session.get('total_load'))
+    my_course_load = int(request.session.get('my_course_load'))
 
     # create list containing the value attributes for the flag inputs
     # from the main form checkbox input fields
@@ -126,7 +128,7 @@ def processmainform(request):
 
 
     ''' potentially could use zip the matrix (to get the matrix columns as list index values)
-    and check for existence of 1 or 0 to determine whether that '''
+    and check for existence of 1 or 0 to determine whether that column/course has prereqs'''
 
     '''
     # create a list of all courses that have no prerequisites
