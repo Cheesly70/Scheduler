@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 def index(request):
     return render(request, 'SchedulerApp/home.html')
 
+
 def get_main_form(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
@@ -42,14 +43,17 @@ def process_main_form(request):
 
     ############################################################################
 
-    # create list containing the value attributes for the flag inputs form
-    # the main form checkbox input fields
+
+    ''' Don't need this block of code nor the can_take_with_prereqs[course_str] =  flag in flag_values
+        since we can just check if the value of flag is not equal to None
+    # create list containing the value attributes from the flag inputs form the
+    # main-form checkbox input fields
     # That is used as a list to check against to determine if the checkbox was checked on form
     flag_values = []
     for num in range (1, total_load + 1):
         num = str(num)
         flag_values.append("flag " + num)
-
+    '''
     # dictionary that tells whether a course can be taken with its prerequisites
     can_take_with_prereqs = {}
 
@@ -65,8 +69,12 @@ def process_main_form(request):
             course_dict[course_str] = [x.strip().lower() for x in str(request.GET.get("prereqval " + i)).split(',')]
 
             # check if flag checkbox for course has been checked
+            # the below line will either evaluate to the value attribute from the form
+            # or to None. If it's not None, then flag = ie. "flag 1", and we check that against
+            # the flag_values list. Essentially, it not being None tells us it was checked on the form
             flag = request.GET.get("flag " + i, None)
-            can_take_with_prereqs[course_str] = flag in flag_values
+            can_take_with_prereqs[course_str] = flag is not None
+            #can_take_with_prereqs[course_str] =  flag in flag_values
 
     print course_dict
     print can_take_with_prereqs
@@ -109,9 +117,14 @@ def process_main_form(request):
 
     # run the top sort on the graph, considering courses that can be taken
     # concurrently with their prerequisites
-    # code coming soon
     # note the index of each course row major is based on course_list
     # but we can use zip to get at the columns
+
+
+    # code coming soon
+
+
+
 
 
 
