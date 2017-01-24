@@ -41,95 +41,81 @@ def processmainform(request):
     my_course_load = int(request.session.get('my_course_load'))
 
 
+    # create list containing the value attributes for the flag inputs form
+    # the main form checkbox input fields
+    # That is used as a list to check against to determine if the checkbox was checked on form
+    flag_values = []
+    for num in range (1, total_load + 1):
+        num = str(num)
+        flag_values.append("flag " + num)
+
+    # dictionary that tells whether a course can be taken with its prerequisites
+    can_take_with_prereqs = {}
 
     # creating mapping/dictionary of courses to prerequisites
-    def create_course_map();
-        # put data from main form into python dictionary
-        course_dict = {}
-        if request.method == 'GET':
-            #total_load = int(request.session.get('total_load'))
-            for i in range(1, total_load + 1):
-                i = str(i) # since strings are immutable and we can't concatenate strs and ints
-                course_str = str(request.GET.get("course " + i))
-                course_dict[course_str] = str(request.GET.get("prereqval " + i)).split(',')
-
-            print course_dict
-            print can_take_with_prereqs
-        return course_dict
-
-    def take_course_with_prereqs(course_dict):
-        # dictionary that tells whether a course can be taken with its prerequisites
-        can_take_with_prereqs = {}
-
-        # create list containing the value attributes for the flag inputs form
-        # the main form checkbox input fields
-        # That is used as a list to check against to determine if the checkbox was checked on form
-        flag_values = []
-        for num in range (1, total_load + 1):
-            num = str(num)
-            flag_values.append("flag " + num)
-
+    # put data from main form into python dictionary
+    course_dict = {}
+    if request.method == 'GET':
+        #total_load = int(request.session.get('total_load'))
         for i in range(1, total_load + 1):
             i = str(i) # since strings are immutable and we can't concatenate strs and ints
             course_str = str(request.GET.get("course " + i))
+            course_dict[course_str] = str(request.GET.get("prereqval " + i)).split(',')
+
             # check if flag checkbox for course has been checked
             flag = request.GET.get("flag " + i, None)
             can_take_with_prereqs[course_str] = flag in flag_values
+    print course_dict
+    print can_take_with_prereqs
 
-        return can_take_with_prereqs
 
-    # defin method to iterate the dictionary to form a 'list' of unique courses
+    # iterate the dictionary to form a 'list' of unique courses
     # from the main form union all unique dictionary keys with the courses in the
     # values part of the  dictionary
-    def get_course_list(course_dict):
-        value_list = set()
-        for lst in course_dict.values():
-            for elm in lst:
-                values.add(elm.strip())
-        # union the unique keys of the dictionary with the unique dictionary values
-        course_list = list(set(course_dict.keys()).union(values))
-        if 'none' in course_list:
-            course_list.remove('none')
-        print course_list
-
-        return course_list
-
+    value_list = set()
+    for lst in course_dict.values():
+        for elm in lst:
+            values.add(elm.strip())
+    # union the unique keys of the dictionary with the unique dictionary values
+    course_list = list(set(course_dict.keys()).union(values))
+    if 'none' in course_list:
+        course_list.remove('none')
+    print course_list
 
 
     ''' LOL Yes Aaron I will use list comprehension below to generate a matrix containg all zeros
         then g back through and put 1's where matrix[prereq][course] is
         true
     '''
-    def create_courses_matrix(course_list, course_dict):
-        # create directed graph (matrix) from the list & dictionary above
-        graph = []
-        row = []
-        for course in course_list:
-            for other_course in course_list:
-                try:
-                    # check if course is a prereq for other_course
-                    # (is course in the dictionary-value list for other_course)
-                    # the .lower() is in case a user enters a mix of upper and lowercase course names
-                    is_prereq = str(course) in [x.strip().lower() for x in course_dict[str(other_course)]]
-                except KeyError:
-                    row.append(0)
+    # create directed graph (matrix) from the list & dictionary above
+    graph = []
+    row = []
+    for course in course_list:
+        for other_course in course_list:
+            try:
+                # check if course is a prereq for other_course
+                # (is course in the dictionary-value list for other_course)
+                # the .lower() is in case a user enters a mix of upper and lowercase course names
+                is_prereq = str(course) in [x.strip().lower() for x in course_dict[str(other_course)]]
+            except KeyError:
+                row.append(0)
+            else:
+                if is_prereq:
+                    row.append(1)
                 else:
-                    if is_prereq:
-                        row.append(1)
-                    else:
-                        row.append(0)
-            # if no more other_courses left in list, then add the row to the graph
-            graph.append(row)
-            # reset row to be empty
-            row = []
-        print graph
-        return graph
+                    row.append(0)
+        # if no more other_courses left in list, then add the row to the graph
+        graph.append(row)
+        # reset row to be empty
+        row = []
+    print graph
+    return graph
 
 
     # run the top sort on the graph, considering courses that can be taken
     # concurrently with their prerequisites
     # code coming soon
-    def top_sort():
+
 
 
 
