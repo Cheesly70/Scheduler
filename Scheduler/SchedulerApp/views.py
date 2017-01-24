@@ -1,19 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
-# Create your views here.
 
 def index(request):
-    #return HttpResponse("<h2>HEY!</h2>")
-    return render(request, 'SchedulerApp/home.html') #{'form': form,
-                                                      #'class_num': classnum,})
-
-#def mainform(request): # test
-#    return HttpResponse("<h1>testing testing 123</h1>")
+    return render(request, 'SchedulerApp/home.html')
 
 def getmainform(request):
     # if this is a POST request we need to process the form data
     if request.method == 'GET':
+        # store these session variables for use in other views
         total_load = int(request.GET.get("total_load"))
         request.session['total_load'] = total_load
 
@@ -25,11 +20,11 @@ def getmainform(request):
         request.session['my_course_load'] = my_course_load
         return render(request, 'SchedulerApp/courseform.html', {'prelim1': string,})
 
+    # else redirect to home page
+    return render(request, 'SchedulerApp/home.html')
 
-    # return error or redirect ro main form
 
 def processmainform(request):
-
 
     ''' Thoughts:
     # step1: process response information and put into lists
@@ -37,94 +32,105 @@ def processmainform(request):
     # step3: run top sort on graph
     # Last: render results appropriately
     # Optional: provide output as pdf (check out outputting with django pdfs)
-
-
-    # use ignore case when processing list of prereqs list
-    # check if both the course list and prereq list are empty return a HttpResponseRedirect
-    # or something like it
-    # create list to populate with course names
-
     '''
 
+    # Global variables for the session
     # grab total # of courses and the # of courses being considered
     # by user, from the getmainform view using django sessions
     total_load = int(request.session.get('total_load'))
     my_course_load = int(request.session.get('my_course_load'))
 
-    # create list containing the value attributes for the flag inputs
-    # from the main form checkbox input fields
-    # used below to check if checkbox was checked on form
-    flag_values = []
-    for num in range (1, total_load + 1):
-        num = str(num)
-        flag_values.append("flag " + num)
 
-    # dictionary that maps the course to its boolean flag value of true (1) or false (0)
-    flag_boolean = {}
-    # put data from main form into python dictionary
-    course_dict = {}
-    if request.method == 'GET':
-        #total_load = int(request.session.get('total_load'))
+
+    # creating mapping/dictionary of courses to prerequisites
+    def create_course_map();
+        # put data from main form into python dictionary
+        course_dict = {}
+        if request.method == 'GET':
+            #total_load = int(request.session.get('total_load'))
+            for i in range(1, total_load + 1):
+                i = str(i) # since strings are immutable and we can't concatenate strs and ints
+                course_str = str(request.GET.get("course " + i))
+                course_dict[course_str] = str(request.GET.get("prereqval " + i)).split(',')
+
+            print course_dict
+            print can_take_with_prereqs
+        return course_dict
+
+    def take_course_with_prereqs(course_dict):
+        # dictionary that tells whether a course can be taken with its prerequisites
+        can_take_with_prereqs = {}
+
+        # create list containing the value attributes for the flag inputs form
+        # the main form checkbox input fields
+        # That is used as a list to check against to determine if the checkbox was checked on form
+        flag_values = []
+        for num in range (1, total_load + 1):
+            num = str(num)
+            flag_values.append("flag " + num)
+
         for i in range(1, total_load + 1):
             i = str(i) # since strings are immutable and we can't concatenate strs and ints
             course_str = str(request.GET.get("course " + i))
-            course_dict[course_str] = [str(request.GET.get("prereqval " + i))]
-
             # check if flag checkbox for course has been checked
             flag = request.GET.get("flag " + i, None)
-            if flag in flag_values:
-                flag_boolean[course_str] = 1
-            else:
-                flag_boolean[course_str] = 0
-        #context = {'course_dict':course_dict,}
-        print course_dict
-        print flag_boolean
-    #return render(request, 'SchedulerApp/test.html', context)
+            can_take_with_prereqs[course_str] = flag in flag_values
 
+        return can_take_with_prereqs
 
-
-    # iterate the dictionary to form a 'list' of unique courses from the main form
-    course_list = []
-    for key, value in course_dict.iteritems():
-        course_list.append(key)
-        # the .lower() is in case user types uppercase 'None' for prereqs
-        course_list.extend([x.strip().lower() for x in value[0].split(',')])
-    # clear out the duplicates in the course list
-    course_list = sorted(set(course_list))
-    # if a course has no prereqs need to handle the "none" input since "none"
-    # is not a valid course to add to the list
-    if 'none' in course_list:
-        while 'none' in course_list:
+    # defin method to iterate the dictionary to form a 'list' of unique courses
+    # from the main form union all unique dictionary keys with the courses in the
+    # values part of the  dictionary
+    def get_course_list(course_dict):
+        value_list = set()
+        for lst in course_dict.values():
+            for elm in lst:
+                values.add(elm.strip())
+        # union the unique keys of the dictionary with the unique dictionary values
+        course_list = list(set(course_dict.keys()).union(values))
+        if 'none' in course_list:
             course_list.remove('none')
-    print course_list
+        print course_list
 
-    # create directed graph (matrix) from the list & dictionary above
-    graph = []
-    row = []
-    for course in course_list:
-        for other_course in course_list:
-            try:
-                # check if course is a prereq for other_course
-                # (is course in the dictionary-value list for other_course)
-                # the .lower() is in case a user enters a mix of upper and lowercase course names
-                is_prereq = str(course) in [x.strip().lower() for x in course_dict[str(other_course)][0].split(',')]
-            except KeyError:
-                row.append(0)
-            else:
-                if is_prereq:
-                    row.append(1)
-                else:
-                    row.append(0)
-        # if no more other_courses left in list, then add the row to the graph
-        graph.append(row)
-        # reset row to be empty
+        return course_list
+
+
+
+    ''' LOL Yes Aaron I will use list comprehension below to generate a matrix containg all zeros
+        then g back through and put 1's where matrix[prereq][course] is
+        true
+    '''
+    def create_courses_matrix(course_list, course_dict):
+        # create directed graph (matrix) from the list & dictionary above
+        graph = []
         row = []
-    print graph
+        for course in course_list:
+            for other_course in course_list:
+                try:
+                    # check if course is a prereq for other_course
+                    # (is course in the dictionary-value list for other_course)
+                    # the .lower() is in case a user enters a mix of upper and lowercase course names
+                    is_prereq = str(course) in [x.strip().lower() for x in course_dict[str(other_course)]]
+                except KeyError:
+                    row.append(0)
+                else:
+                    if is_prereq:
+                        row.append(1)
+                    else:
+                        row.append(0)
+            # if no more other_courses left in list, then add the row to the graph
+            graph.append(row)
+            # reset row to be empty
+            row = []
+        print graph
+        return graph
 
 
     # run the top sort on the graph, considering courses that can be taken
     # concurrently with their prerequisites
     # code coming soon
+    def top_sort():
+
 
 
     ''' potentially could use zip the matrix (to get the matrix columns as list index values)
