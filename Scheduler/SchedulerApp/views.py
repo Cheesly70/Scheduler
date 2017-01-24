@@ -69,9 +69,6 @@ def process_main_form(request):
             course_dict[course_str] = [x.strip().lower() for x in str(request.GET.get("prereqval " + i)).split(',')]
 
             # check if flag checkbox for course has been checked
-            # the below line will either evaluate to the value attribute from the form
-            # or to None. If it's not None, then flag = ie. "flag 1", and we check that against
-            # the flag_values list. Essentially, it not being None tells us it was checked on the form
             flag = request.GET.get("flag " + i, None)
             can_take_with_prereqs[course_str] = flag is not None
             #can_take_with_prereqs[course_str] =  flag in flag_values
