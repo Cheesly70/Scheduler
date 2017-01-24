@@ -6,8 +6,8 @@ app_name ='SchedulerApp'
 urlpatterns =[
     url(r'^$', views.index, name='index'),
     #url(r'^mainform/$', views.mainform, name='mainform'),
-    url(r'^getmainform/$', views.getmainform, name='getmainform'),
-    url(r'^processmainform/$', views.processmainform, name='processmainform'),
+    url(r'^getmainform/$', views.get_main_form, name='get_main_form'),
+    url(r'^processmainform/$', views.process_main_form, name='process_main_form'),
 
 
 ]
