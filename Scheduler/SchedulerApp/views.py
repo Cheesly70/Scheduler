@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-
+from math import factorial
+import itertools
 
 def index(request):
     return render(request, 'SchedulerApp/home.html')
@@ -17,6 +18,7 @@ def get_main_form(request):
         # over the total number of courses a user selects, in order to
         # generate the main form
         string = "x" * total_load
+
         # grab the second value -> desired_load for semester
         my_course_load = int(request.GET.get("desired_load"))
         request.session['my_course_load'] = my_course_load
@@ -107,7 +109,6 @@ def process_main_form(request):
     # create list of courses that have no dependencies
     courses_without_prereqs = []
 
-    #FIXXXXXXXXX BELOW CODEE BY SCRUBBING 'none' OUT OF course_dict
     # if  a course is not a key from the course_list, then it must be a prereq
     # so it can be added to the lost of coursess wth no dependencies
     # and if a key has no prereqs, also add it to that list
@@ -125,25 +126,56 @@ def process_main_form(request):
     # run the top sort on the graph, considering courses that can be taken
     # concurrently with their prerequisites, and the limit of allowed courses
     # for the semester as indicated by user on the preliminary form
-    # note the index of each course row major is based on course_list
+    # Thought: note the index of each course row major is based on course_list
     # but we can use zip to get at the columns
     # code coming soon
 
+    # list of top-sort results
+    results = []
+    # intermediate top sort results list
+    intermediate_top = []
+
+    combined_list = []
+
+    if len(courses_without_prereqs) >= my_course_load:
+        # then can only make combos amongst the courses in courses_without_prereqs
+        # and the courses in the can_take_with_prereqs list
+        # combine into one list, and do all combos of size courses_without_prereqs
+        # But only add the courses whose prereqs are already in the list
+        combined_list.extend(courses_without_prereqs)
+
+        for course in can_take_with_prereqs:
+            if can_take_with_prereqs[course]: # if the value in dictionary is "true"
+                for prereq in course_dict[course]:
+                    if prereq not in courses_without_prereqs:
+                        pass
+                combined_list.append(course)
+        combined_list = sorted(list(set(combined_list)))
+
+        print str(combined_list) + "\n"
+
+        # now make # of items in list choose my_course_load amount of orderings
+        # basically n choose k number of sortings [n!/k!*(n-k)]!
+        # create a list for each sort and add to results list
+        #len_combined_list = len(combined_list)
+        #total_combos = factorial(len_combined_list) / (factorial(my_course_load) * factorial((len_combined_list) - my_course_load))
+        #print total_combos
+        #for i in range(total_combos):
+
+        # itertools is really nifty!
+        combos = list(itertools.combinations(combined_list, my_course_load))
+        print combos
 
 
 
+    else:
+        # if the number of courses in courses_without_prereqs is less than my_course_load
+        # then we do the top sort with the courses in courses_without_prereqs as the starting
+        # values in each iteration
+        # code coming soon
+        pass
 
-    ''' potentially could use zip the matrix (to get the matrix columns as list index values)
-    and check for existence of 1 or 0 to determine whether that column/course has prereqs
-    '''
 
-    '''
-    # create a list of all courses that have no prerequisites
-    # check if the # of items in the list is <= to the # of courses
-    the student wants to take for the upcoming semester...if it's equal
-    then create all possibilities amongst the prerequisites and the courses
-    themeselves if they can be taken with their prerequisites
-    '''
 
 
     # for testing purposes
