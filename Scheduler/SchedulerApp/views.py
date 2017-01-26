@@ -14,7 +14,8 @@ def get_main_form(request):
         request.session['total_load'] = total_load
 
         # the following allows the rendered template to iterate
-        # over the total number of courses a user selects
+        # over the total number of courses a user selects, in order to
+        # generate the main form
         string = "x" * total_load
         # grab the second value -> desired_load for semester
         my_course_load = int(request.GET.get("desired_load"))
@@ -28,10 +29,6 @@ def get_main_form(request):
 def process_main_form(request):
 
     ''' Thoughts:
-    # step1: process response information and put into lists
-    # step2: create graph out of prcessed information
-    # step3: run top sort on graph
-    # Last: render results appropriately
     # Optional: provide output as pdf (check out outputting with django pdfs)
     '''
 
@@ -43,17 +40,9 @@ def process_main_form(request):
 
     ############################################################################
 
+    #*****************************************MAP OF COURSE TO PREREQS*****************************************
+    #*************************************ALSO DETERMINE IF FLAG WAS CHECKED***********************************
 
-    ''' Don't need this block of code nor the can_take_with_prereqs[course_str] =  flag in flag_values
-        since we can just check if the value of flag is not equal to None
-    # create list containing the value attributes from the flag inputs form the
-    # main-form checkbox input fields
-    # That is used as a list to check against to determine if the checkbox was checked on form
-    flag_values = []
-    for num in range (1, total_load + 1):
-        num = str(num)
-        flag_values.append("flag " + num)
-    '''
     # dictionary that tells whether a course can be taken with its prerequisites
     can_take_with_prereqs = {}
 
@@ -67,16 +56,18 @@ def process_main_form(request):
             course_str = str(request.GET.get("course " + i))
             # also strip off any white space and make the courses lowercase as they're inputted in dict
             course_dict[course_str] = [x.strip().lower() for x in str(request.GET.get("prereqval " + i)).split(',')]
+            # replace 'none' input by user with empty list'
+            if 'none' in course_dict[course_str]:
+                course_dict[course_str] = []
 
             # check if flag checkbox for course has been checked
             flag = request.GET.get("flag " + i, None)
             can_take_with_prereqs[course_str] = flag is not None
-            #can_take_with_prereqs[course_str] =  flag in flag_values
 
-    print course_dict
-    print can_take_with_prereqs
+    print "Course dictionary (w/o 'none' values): " + str(course_dict) + "\n"
+    print "Can take with prereqs: " + str(can_take_with_prereqs) + "\n"
 
-    ##########################################################################################################
+    #************************************GENERATE UNIQUE COURSE LIST*******************************************
 
     # iterate the dictionary to form a 'list' of unique courses
     # from the main form union all unique dictionary keys with the courses in the
@@ -84,14 +75,15 @@ def process_main_form(request):
     values_list = set()
     for lst in course_dict.values():
         for elm in lst:
-            values_list.add(elm.strip()) # get rid of strip() ************************'''
+            values_list.add(elm)
     # union the unique keys of the dictionary with the unique dictionary values
     course_list = sorted(list(set(course_dict.keys()).union(values_list)))
-    if 'none' in course_list:
-        course_list.remove('none')
-    print course_list
+    if [] in course_list:
+        course_list.remove([])
 
-    ###########################################################################################################
+    print "Unique course list: " + str(course_list) + "\n"
+
+    #*****************************************MAIN GRAPH STUFF**************************************************
 
     # create directed graph (matrix) from the list & dictionary above w/ list comprehensions
     # first create a matrix/graph of all zeros
@@ -108,25 +100,42 @@ def process_main_form(request):
             # need index of prereq and index of course
             graph[course_list.index(prereq)][course_list.index(course)] = 1
 
-    print graph
+    print "Graph[prereq][course] " + str(graph) + "\n"
 
-    ###########################################################################################################
+    #*****************************************TOP SORT STUFF************************************************
+
+    # create list of courses that have no dependencies
+    courses_without_prereqs = []
+
+    #FIXXXXXXXXX BELOW CODEE BY SCRUBBING 'none' OUT OF course_dict
+    # if  a course is not a key from the course_list, then it must be a prereq
+    # so it can be added to the lost of coursess wth no dependencies
+    # and if a key has no prereqs, also add it to that list
+
+    for course in course_list:
+        if course not in course_dict.keys():
+            courses_without_prereqs.append(course)
+        else:
+            if course_dict[course] == []:
+                courses_without_prereqs.append(course)
+
+    print "Courses w/o prereqs: " + str(courses_without_prereqs) + "\n"
+
 
     # run the top sort on the graph, considering courses that can be taken
-    # concurrently with their prerequisites
+    # concurrently with their prerequisites, and the limit of allowed courses
+    # for the semester as indicated by user on the preliminary form
     # note the index of each course row major is based on course_list
     # but we can use zip to get at the columns
-
-
     # code coming soon
 
 
 
 
 
-
     ''' potentially could use zip the matrix (to get the matrix columns as list index values)
-    and check for existence of 1 or 0 to determine whether that column/course has prereqs'''
+    and check for existence of 1 or 0 to determine whether that column/course has prereqs
+    '''
 
     '''
     # create a list of all courses that have no prerequisites
