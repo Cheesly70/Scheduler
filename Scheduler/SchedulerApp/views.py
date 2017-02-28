@@ -85,6 +85,11 @@ def process_main_form(request):
 
     print "Unique course list: " + str(course_list) + "\n"
 
+
+#************MAY NOT NEED GRAPH REPRESENTATIONS BELOW (SINCE CAN USE DICTIONARY TO REPRESENT ADJ. LIST)******
+
+
+
     #*****************************************MAIN GRAPH STUFF**************************************************
 
     # create directed graph (matrix) from the list & dictionary above w/ list comprehensions
@@ -103,6 +108,24 @@ def process_main_form(request):
             graph[course_list.index(prereq)][course_list.index(course)] = 1
 
     print "Graph[prereq][course] " + str(graph) + "\n"
+
+
+    #*****************************************MAIN GRAPH STUFF 2.0**************************************************
+
+    # create an adjacency list representaion of the graph,
+    # from the course_list and course_dict
+    #********************The "Main Graph 2.0" code is currently not in use **************************
+    adj_list = {}
+
+    for course in course_list:
+        for course_key in course_dict:
+            if course in course_dict[course_key]:
+                lst = [course_key]
+                adj_list[course] = lst
+                lst = []
+    #print adj_list
+    #************************************************************************************************
+
 
     #*****************************************TOP SORT STUFF************************************************
 
@@ -130,11 +153,6 @@ def process_main_form(request):
     # but we can use zip to get at the columns
     # code coming soon
 
-    # list of top-sort results
-    results = []
-    # intermediate top sort results list
-    intermediate_top = []
-
     combined_list = []
 
     if len(courses_without_prereqs) >= my_course_load:
@@ -153,6 +171,7 @@ def process_main_form(request):
         combined_list = sorted(list(set(combined_list)))
 
         print str(combined_list) + "\n"
+
 
         # now make # of items in list choose my_course_load amount of orderings
         # basically n choose k number of sortings [n!/k!*(n-k)]!
@@ -173,6 +192,11 @@ def process_main_form(request):
         # then we do the top sort with the courses in courses_without_prereqs as the starting
         # values in each iteration
         # code coming soon
+
+        # example: a user has 2 of 5 courses that have no prereqs and they want to take 4 courses
+        # total in the upcoming semester (5 choose 2) for the remaining courses
+        # then use that to form combos with the 2 courses that have no prereqs
+
         pass
 
 
