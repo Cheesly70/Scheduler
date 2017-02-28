@@ -1,16 +1,17 @@
 # Scheduler
 
-Django web application for building college schedules.
+#### Django web application for building college schedules.
 
-
-It is assumed you have Django on your machine.
+<br>
+It is assumed you have Django installed on your machine.
 
 Clone this repository to wherever you'd like, then simply:
 
-<b>cd Scheduler</b>
+`cd Scheduler`
 
 Then run the application by typing:
 
-<b>python manage.py runserver</b>
+`python manage.py runserver`
 
 Then visit http://127.0.0.1:8000/SchedulerApp/ in your browser.
+
