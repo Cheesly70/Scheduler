@@ -1,10 +1,12 @@
 # Scheduler
 
-#### Django web application for building college schedules.
+#### First Attempt at Django web application, geared towards building college schedules.
+<br />
+## Install: 
+<br />
+Run: `pip install Django==1.10 `
 
-<br>
-It is assumed you have Django installed on your machine.
-
+## Running the Application:
 Clone this repository to wherever you'd like, then simply:
 
 `cd Scheduler`
