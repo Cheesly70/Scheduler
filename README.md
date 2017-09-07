@@ -2,8 +2,11 @@
 
 #### First Attempt at Django web application, geared towards building college schedules.
 <br />
+
 ## Install: 
+
 <br />
+
 Run: `pip install Django==1.10 `
 
 ## Running the Application:
