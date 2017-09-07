@@ -1,6 +1,7 @@
 # Scheduler
 
-#### First Attempt at Django web application, geared towards building college schedules.
+#### First attempt at Django web application, geared towards building college schedules.
+<br />
 
 ## Install: 
 Run: `pip install Django==1.10 `
